@@ -1,3 +1,34 @@
-
+.card {
+  width: 400px;
+  height: auto;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+.card__title {
+  color: black;
+  margin: 16px 0 8px;
+  font-weight: bold;
+}
+.card__descript {
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+  margin-bottom: 16px;
+}
+.card__button {
+  display: inline-block;
+  background: #3498db;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+}
 
 /*# sourceMappingURL=style.css.map */

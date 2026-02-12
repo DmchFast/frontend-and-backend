@@ -1,0 +1,45 @@
+$primColor: #3498db;
+$border: 12px;
+$text: black;
+
+@mixin shadow($opacity: 0.1) {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, $opacity);
+}
+
+.card {
+    width: 400px;
+    height: auto;
+    border-radius: $border;
+    padding: 16px;
+    text-align: center;
+
+    @include shadow(0.15);
+    
+    &:hover {
+        transform: translateY(-5px);
+        @include shadow(0.25);
+    }
+      
+    &__title {
+        color: $text;
+        margin: 16px 0 8px;
+        font-weight: bold;
+    }
+    
+    &__descript {
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: left;
+        margin-bottom: 16px;
+    }
+    
+    &__button {
+        display: inline-block;
+        background: $primColor;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+}
