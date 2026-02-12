@@ -2,6 +2,14 @@ $primColor: #3498db;
 $border: 12px;
 $text: black;
 
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    background: $primColor;
+}
+
 @mixin shadow($opacity: 0.1) {
     box-shadow: 0 4px 12px rgba(0, 0, 0, $opacity);
 }
@@ -9,17 +17,34 @@ $text: black;
 .card {
     width: 400px;
     height: auto;
+    border: 1px solid $primColor;
     border-radius: $border;
     padding: 16px;
+    background: rgb(245, 245, 245);
     text-align: center;
 
     @include shadow(0.15);
+    
+    transition: all 0.3s;
     
     &:hover {
         transform: translateY(-5px);
         @include shadow(0.25);
     }
-      
+    
+
+    &__image {
+        display: block;
+        width: 100%;
+        border-radius: $border;
+        transition: all 0.3s;
+    
+        &:hover {
+            transform: translateY(-5px);
+            @include shadow(0.25);
+        }
+    }    
+
     &__title {
         color: $text;
         margin: 16px 0 8px;
@@ -30,6 +55,7 @@ $text: black;
         font-size: 14px;
         line-height: 1.5;
         text-align: left;
+        color: #36393a;
         margin-bottom: 16px;
     }
     
@@ -41,5 +67,11 @@ $text: black;
         border-radius: 30px;
         text-decoration: none;
         font-weight: bold;
+        transition: all 0.3s;
+        
+        &:hover {
+            background: #1b5880;
+            transform: translateY(-5px);
+        }
     }
 }
