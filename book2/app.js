@@ -14,6 +14,24 @@ app.get('/', (req, res) => {
     res.send('Главная страница');
 });
 
+// GET для просмотра товаров
+app.get('/products', (req, res) => {
+    res.send(JSON.stringify(products));
+});
+
+app.get('/products/:id', (req, res) => {
+    let product = products.find(p => p.id == req.params.id);
+    res.send(JSON.stringify(product));
+});
+
+// POST для добавления товара
+app.post('/products', (req, res) => {
+    const { name, price, category } = req.body;
+    const newProduct = { id: Date.now(), name, price, category };
+    products.push(newProduct);
+    res.status(201).json(newProduct);
+});
+
 app.listen(port, () => {
     console.log(`Сервер запущен на http://localhost:${port}`);
 });
