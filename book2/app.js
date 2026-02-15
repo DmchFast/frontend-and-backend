@@ -32,6 +32,22 @@ app.post('/products', (req, res) => {
     res.status(201).json(newProduct);
 });
 
+// PATCH редактирования товара
+app.patch('/products/:id', (req, res) => {
+    const product = products.find(p => p.id == req.params.id);
+    const { name, price, category } = req.body;
+    if (name !== undefined) product.name = name;
+    if (price !== undefined) product.price = price;
+    if (category !== undefined) product.category = category;
+    res.json(product);
+});
+
+// DELETE удаления товара
+app.delete('/products/:id', (req, res) => {
+    products = products.filter(p => p.id != req.params.id);
+    res.send('Ok');
+});
+
 app.listen(port, () => {
     console.log(`Сервер запущен на http://localhost:${port}`);
 });
