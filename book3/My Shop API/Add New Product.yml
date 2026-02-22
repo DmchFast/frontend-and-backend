@@ -1,0 +1,23 @@
+info:
+  name: Add New Product
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:3000/products
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Телевизор",
+        "price": 25000,
+        "category": "Техника для дома"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
