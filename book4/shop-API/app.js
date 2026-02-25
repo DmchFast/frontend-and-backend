@@ -14,7 +14,7 @@ let products = [
     description: 'Станьте викингом по имени Эйвор и приведите свой клан к славе среди суровых земель Англии',
     price: 2999,
     stock: 15,
-    rating: 4.7,
+    rating: 4.2,
     image: 'ac_valhalla'
   },
   {
@@ -24,7 +24,7 @@ let products = [
     description: 'Откройте для себя историю Басима, вора, ставшего ассасином, в атмосферном Багдаде',
     price: 3499,
     stock: 12,
-    rating: 4.8,
+    rating: 4.7,
     image: 'ac_mirage'
   },
   {
@@ -34,7 +34,7 @@ let products = [
     description: 'Отправьтесь в эпическое путешествие по Древней Греции и станьте легендарным спартанским героем',
     price: 1999,
     stock: 20,
-    rating: 4.6,
+    rating: 3.7,
     image: 'ac_odyssey'
   },
   {
@@ -44,7 +44,7 @@ let products = [
     description: 'Узнайте историю создания Братства ассасинов в Древнем Египте',
     price: 1799,
     stock: 18,
-    rating: 4.5,
+    rating: 4.1,
     image: 'ac_origins'
   },
   {
@@ -54,7 +54,7 @@ let products = [
     description: 'Возглавьте преступный мир Лондона викторианской эпохи в роли близнецов-ассасинов',
     price: 1299,
     stock: 8,
-    rating: 4.3,
+    rating: 3.9,
     image: 'ac_syndicate'
   },
   {
@@ -64,7 +64,7 @@ let products = [
     description: 'Погрузитесь в Париж времен Французской революции и раскройте тайны города',
     price: 1299,
     stock: 10,
-    rating: 4.2,
+    rating: 4.5,
     image: 'ac_unity'
   },
   {
@@ -74,7 +74,7 @@ let products = [
     description: 'Станьте пиратом Эдвардом Кенуэем и бороздите воды Карибского моря',
     price: 999,
     stock: 25,
-    rating: 4.9,
+    rating: 5.0,
     image: 'ac_black_flag'
   },
   {
