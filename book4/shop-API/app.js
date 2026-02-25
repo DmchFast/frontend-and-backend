@@ -111,6 +111,28 @@ let products = [
 // Middleware для парсинга JSON
 app.use(express.json());
 
+// GET получение списка товаров
+app.get("/api/products", (req, res) => {
+  res.json(products);
+});
+
+// получения товара проверка
+function findProductOr404(id, res) {
+  const product = products.find(p => p.id == id);
+  if (!product) {
+    res.status(404).json({ error: "Product not found" });
+    return null;
+  }
+  return product;
+}
+
+// GET получение товара по ID
+app.get("/api/products/:id", (req, res) => {
+  const id = req.params.id;
+  const product = findProductOr404(id, res);
+  if (!product) return;
+  res.json(product);
+});
 
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);
