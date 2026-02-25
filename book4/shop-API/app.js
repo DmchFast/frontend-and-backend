@@ -14,7 +14,7 @@ let products = [
     price: 119990,
     stock: 15,
     rating: 4.8,
-    image: 'https://via.placeholder.com/200?text=iPhone+15'
+    image: '1'
   },
   {
     id: nanoid(6),
@@ -24,7 +24,7 @@ let products = [
     price: 109990,
     stock: 10,
     rating: 4.7,
-    image: 'https://via.placeholder.com/200?text=Samsung+S24'
+    image: '2'
   },
   {
     id: nanoid(6),
@@ -34,7 +34,7 @@ let products = [
     price: 199990,
     stock: 8,
     rating: 4.9,
-    image: 'https://via.placeholder.com/200?text=MacBook+Pro'
+    image: '3'
   },
   {
     id: nanoid(6),
@@ -44,7 +44,7 @@ let products = [
     price: 149990,
     stock: 5,
     rating: 4.6,
-    image: 'https://via.placeholder.com/200?text=ASUS+ROG'
+    image: '4'
   },
   {
     id: nanoid(6),
@@ -54,7 +54,7 @@ let products = [
     price: 89990,
     stock: 12,
     rating: 4.8,
-    image: 'https://via.placeholder.com/200?text=iPad+Pro'
+    image: '5'
   },
   {
     id: nanoid(6),
@@ -64,7 +64,7 @@ let products = [
     price: 29990,
     stock: 25,
     rating: 4.9,
-    image: 'https://via.placeholder.com/200?text=Sony'
+    image: '6'
   },
   {
     id: nanoid(6),
@@ -74,7 +74,7 @@ let products = [
     price: 3990,
     stock: 50,
     rating: 4.5,
-    image: 'https://via.placeholder.com/200?text=Mi+Band'
+    image: '7'
   },
   {
     id: nanoid(6),
@@ -84,7 +84,7 @@ let products = [
     price: 179990,
     stock: 3,
     rating: 4.7,
-    image: 'https://via.placeholder.com/200?text=Dell+XPS'
+    image: '8'
   },
   {
     id: nanoid(6),
@@ -94,7 +94,7 @@ let products = [
     price: 89990,
     stock: 7,
     rating: 4.6,
-    image: 'https://via.placeholder.com/200?text=Pixel+8'
+    image: '9'
   },
   {
     id: nanoid(6),
@@ -104,7 +104,7 @@ let products = [
     price: 44990,
     stock: 18,
     rating: 4.8,
-    image: 'https://via.placeholder.com/200?text=Watch'
+    image: '10'
   }
 ];
 
@@ -132,6 +132,25 @@ app.get("/api/products/:id", (req, res) => {
   const product = findProductOr404(id, res);
   if (!product) return;
   res.json(product);
+});
+
+// POST создание нового товара
+app.post("/api/products", (req, res) => {
+  const { name, category, description, price, stock, rating, image } = req.body;
+  
+  const newProduct = {
+    id: nanoid(6),
+    name: name?.trim() || "Без названия",
+    category: category?.trim() || "Без категории",
+    description: description?.trim() || "",
+    price: Number(price) || 0,
+    stock: Number(stock) || 0,
+    rating: rating ? Number(rating) : 0,
+    image: image?.trim() || "image"
+  };
+  
+  products.push(newProduct);
+  res.status(201).json(newProduct);
 });
 
 app.listen(port, () => {
