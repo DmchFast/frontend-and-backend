@@ -1,5 +1,6 @@
 const express = require('express');
 const { nanoid } = require('nanoid');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
@@ -111,6 +112,24 @@ let products = [
 // Middleware для парсинга JSON
 app.use(express.json());
 
+// CORS настройка (для связи с фронтендом)
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
+// Middleware для логирования запросов
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    console.log(`[${new Date().toISOString()}] [${req.method}] ${res.statusCode} ${req.path}`);
+    if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+      console.log('Body:', req.body);
+    }
+  });
+  next();
+});
+
 // GET получение списка товаров
 app.get("/api/products", (req, res) => {
   res.json(products);
@@ -178,6 +197,27 @@ app.patch("/api/products/:id", (req, res) => {
   if (image !== undefined) product.image = image.trim();
   
   res.json(product);
+});
+
+// DELETE удаление товара
+app.delete("/api/products/:id", (req, res) => {
+  const id = req.params.id;
+  const exists = products.some((p) => p.id === id);
+  if (!exists) return res.status(404).json({ error: "Product not found" });
+  
+  products = products.filter((p) => p.id !== id);
+  res.status(204).send();
+});
+
+// 404
+app.use((req, res) => {
+  res.status(404).json({ error: "Not found" });
+});
+
+// обработка ошибок
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: "Internal server error" });
 });
 
 app.listen(port, () => {
