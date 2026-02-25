@@ -9,103 +9,123 @@ const port = 3000;
 let products = [
   {
     id: nanoid(6),
-    name: 'iPhone 15 Pro',
-    category: 'Смартфоны',
-    description: 'Флагманский смартфон Apple с титановым корпусом',
-    price: 119990,
+    name: 'Assassin\'s Creed Valhalla',
+    category: 'Xbox Series X|S, Xbox One',
+    description: 'Станьте викингом по имени Эйвор и приведите свой клан к славе среди суровых земель Англии',
+    price: 2999,
     stock: 15,
-    rating: 4.8,
-    image: '1'
-  },
-  {
-    id: nanoid(6),
-    name: 'Samsung Galaxy S24 Ultra',
-    category: 'Смартфоны',
-    description: 'Флагман Samsung с S Pen и камерой 200 МП',
-    price: 109990,
-    stock: 10,
     rating: 4.7,
-    image: '2'
+    image: 'ac_valhalla'
   },
   {
     id: nanoid(6),
-    name: 'MacBook Pro 14"',
-    category: 'Ноутбуки',
-    description: 'Ноутбук Apple с чипом M3 Pro, 16 ГБ RAM',
-    price: 199990,
-    stock: 8,
-    rating: 4.9,
-    image: '3'
-  },
-  {
-    id: nanoid(6),
-    name: 'ASUS ROG Zephyrus G14',
-    category: 'Ноутбуки',
-    description: 'Игровой ноутбук с Ryzen 9 и RTX 4060',
-    price: 149990,
-    stock: 5,
-    rating: 4.6,
-    image: '4'
-  },
-  {
-    id: nanoid(6),
-    name: 'iPad Pro 12.9"',
-    category: 'Планшеты',
-    description: 'Планшет Apple с экраном Liquid Retina XDR',
-    price: 89990,
+    name: 'Assassin\'s Creed Mirage',
+    category: 'Xbox Series X|S, Xbox One',
+    description: 'Откройте для себя историю Басима, вора, ставшего ассасином, в атмосферном Багдаде',
+    price: 3499,
     stock: 12,
     rating: 4.8,
-    image: '5'
+    image: 'ac_mirage'
   },
   {
     id: nanoid(6),
-    name: 'Sony WH-1000XM5',
-    category: 'Аксессуары',
-    description: 'Беспроводные наушники с шумоподавлением',
-    price: 29990,
+    name: 'Assassin\'s Creed Odyssey',
+    category: 'Xbox One, Xbox Series X|S',
+    description: 'Отправьтесь в эпическое путешествие по Древней Греции и станьте легендарным спартанским героем',
+    price: 1999,
+    stock: 20,
+    rating: 4.6,
+    image: 'ac_odyssey'
+  },
+  {
+    id: nanoid(6),
+    name: 'Assassin\'s Creed Origins',
+    category: 'Xbox One, Xbox Series X|S',
+    description: 'Узнайте историю создания Братства ассасинов в Древнем Египте',
+    price: 1799,
+    stock: 18,
+    rating: 4.5,
+    image: 'ac_origins'
+  },
+  {
+    id: nanoid(6),
+    name: 'Assassin\'s Creed Syndicate',
+    category: 'Xbox One',
+    description: 'Возглавьте преступный мир Лондона викторианской эпохи в роли близнецов-ассасинов',
+    price: 1299,
+    stock: 8,
+    rating: 4.3,
+    image: 'ac_syndicate'
+  },
+  {
+    id: nanoid(6),
+    name: 'Assassin\'s Creed Unity',
+    category: 'Xbox One',
+    description: 'Погрузитесь в Париж времен Французской революции и раскройте тайны города',
+    price: 1299,
+    stock: 10,
+    rating: 4.2,
+    image: 'ac_unity'
+  },
+  {
+    id: nanoid(6),
+    name: 'Assassin\'s Creed IV: Black Flag',
+    category: 'Xbox One, Xbox 360',
+    description: 'Станьте пиратом Эдвардом Кенуэем и бороздите воды Карибского моря',
+    price: 999,
     stock: 25,
     rating: 4.9,
-    image: '6'
+    image: 'ac_black_flag'
   },
   {
     id: nanoid(6),
-    name: 'Xiaomi Mi Band 8',
-    category: 'Аксессуары',
-    description: 'Фитнес-браслет с AMOLED-экраном',
-    price: 3990,
-    stock: 50,
-    rating: 4.5,
-    image: '7'
-  },
-  {
-    id: nanoid(6),
-    name: 'Dell XPS 15',
-    category: 'Ноутбуки',
-    description: 'Премиальный ноутбук с OLED-экраном',
-    price: 179990,
-    stock: 3,
-    rating: 4.7,
-    image: '8'
-  },
-  {
-    id: nanoid(6),
-    name: 'Google Pixel 8 Pro',
-    category: 'Смартфоны',
-    description: 'Смартфон Google с AI-функциями',
-    price: 89990,
+    name: 'Assassin\'s Creed Rogue',
+    category: 'Xbox One, Xbox 360',
+    description: 'Узнайте историю ассасина, ставшего тамплиером, в сеттинге Северной Америки',
+    price: 899,
     stock: 7,
-    rating: 4.6,
-    image: '9'
+    rating: 4.4,
+    image: 'ac_rogue'
   },
   {
     id: nanoid(6),
-    name: 'Apple Watch Series 9',
-    category: 'Аксессуары',
-    description: 'Умные часы Apple с датчиком температуры',
-    price: 44990,
-    stock: 18,
-    rating: 4.8,
-    image: '10'
+    name: 'Assassin\'s Creed III Remastered',
+    category: 'Xbox One, Xbox Series X|S',
+    description: 'Станьте свидетелем Американской революции в роли Коннора, ассасина из клана могавков',
+    price: 1499,
+    stock: 10,
+    rating: 4.5,
+    image: 'ac_3'
+  },
+  {
+    id: nanoid(6),
+    name: 'Assassin\'s Creed Ezio Collection',
+    category: 'Xbox One, Xbox Series X|S',
+    description: 'Три легендарные игры: AC II, Brotherhood и Revelations с улучшенной графикой',
+    price: 2499,
+    stock: 15,
+    rating: 4.9,
+    image: 'ac_ezio'
+  },
+  {
+    id: nanoid(6),
+    name: 'Assassin\'s Creed Chronicles Trilogy',
+    category: 'Xbox One',
+    description: 'Три приключения в Китае, Индии и России в уникальном 2.5D стиле',
+    price: 799,
+    stock: 6,
+    rating: 4.0,
+    image: 'ac_chronicles'
+  },
+  {
+    id: nanoid(6),
+    name: 'Assassin\'s Creed Liberation HD',
+    category: 'Xbox One, Xbox 360',
+    description: 'История первой женщины-ассасина в сеттинге Нового Орлеана XVIII века',
+    price: 599,
+    stock: 10,
+    rating: 4.1,
+    image: 'ac_liberation'
   }
 ];
 
