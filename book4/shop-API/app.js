@@ -153,6 +153,33 @@ app.post("/api/products", (req, res) => {
   res.status(201).json(newProduct);
 });
 
+// PATCH изменение товара
+app.patch("/api/products/:id", (req, res) => {
+  const id = req.params.id;
+  const product = findProductOr404(id, res);
+  if (!product) return;
+  
+  // Проверка обновления
+  if (req.body?.name === undefined && req.body?.category === undefined && 
+      req.body?.description === undefined && req.body?.price === undefined && 
+      req.body?.stock === undefined && req.body?.rating === undefined && 
+      req.body?.image === undefined) {
+    return res.status(400).json({ error: "Nothing to update" });
+  }
+  
+  const { name, category, description, price, stock, rating, image } = req.body;
+  
+  if (name !== undefined) product.name = name.trim();
+  if (category !== undefined) product.category = category.trim();
+  if (description !== undefined) product.description = description.trim();
+  if (price !== undefined) product.price = Number(price);
+  if (stock !== undefined) product.stock = Number(stock);
+  if (rating !== undefined) product.rating = Number(rating);
+  if (image !== undefined) product.image = image.trim();
+  
+  res.json(product);
+});
+
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);
 });
