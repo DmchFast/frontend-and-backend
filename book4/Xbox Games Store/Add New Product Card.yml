@@ -1,0 +1,27 @@
+info:
+  name: Add New Product Card
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:3000/api/products
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Assassin's Creed Rogue",
+        "category": "Xbox 360",
+        "description": "Ассасин = Тамплиер",
+        "price": 899,
+        "stock": 7,
+        "rating": 4.4,
+        "image": "https://www.1c-interes.ru/images/2020/07/AC_Rogue_sc1.jpg"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
