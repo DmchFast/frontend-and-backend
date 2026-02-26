@@ -1,6 +1,10 @@
 const express = require('express');
 const { nanoid } = require('nanoid');
 const cors = require('cors');
+const path = require('path');
+
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 const port = 3000;
@@ -15,7 +19,7 @@ let products = [
     price: 2999,
     stock: 15,
     rating: 4.2,
-    image: 'ac_valhalla'
+    image: '/img/Assassins Creed Valhalla.webp'
   },
   {
     id: nanoid(6),
@@ -25,37 +29,7 @@ let products = [
     price: 3499,
     stock: 12,
     rating: 4.7,
-    image: 'ac_mirage'
-  },
-  {
-    id: nanoid(6),
-    name: 'Assassin\'s Creed Odyssey',
-    category: 'Xbox One, Xbox Series X|S',
-    description: 'Отправьтесь в эпическое путешествие по Древней Греции и станьте легендарным спартанским героем',
-    price: 1999,
-    stock: 20,
-    rating: 3.7,
-    image: 'ac_odyssey'
-  },
-  {
-    id: nanoid(6),
-    name: 'Assassin\'s Creed Origins',
-    category: 'Xbox One, Xbox Series X|S',
-    description: 'Узнайте историю создания Братства ассасинов в Древнем Египте',
-    price: 1799,
-    stock: 18,
-    rating: 4.1,
-    image: 'ac_origins'
-  },
-  {
-    id: nanoid(6),
-    name: 'Assassin\'s Creed Syndicate',
-    category: 'Xbox One',
-    description: 'Возглавьте преступный мир Лондона викторианской эпохи в роли близнецов-ассасинов',
-    price: 1299,
-    stock: 8,
-    rating: 3.9,
-    image: 'ac_syndicate'
+    image: '/img/Assassins Creed Mirage.webp'
   },
   {
     id: nanoid(6),
@@ -65,27 +39,17 @@ let products = [
     price: 1299,
     stock: 10,
     rating: 4.5,
-    image: 'ac_unity'
+    image: '/img/Assassins Creed Unity.webp'
   },
   {
     id: nanoid(6),
     name: 'Assassin\'s Creed IV: Black Flag',
     category: 'Xbox One, Xbox 360',
     description: 'Станьте пиратом Эдвардом Кенуэем и бороздите воды Карибского моря',
-    price: 999,
+    price: 1399,
     stock: 25,
     rating: 5.0,
-    image: 'ac_black_flag'
-  },
-  {
-    id: nanoid(6),
-    name: 'Assassin\'s Creed Rogue',
-    category: 'Xbox One, Xbox 360',
-    description: 'Узнайте историю ассасина, ставшего тамплиером, в сеттинге Северной Америки',
-    price: 899,
-    stock: 7,
-    rating: 4.4,
-    image: 'ac_rogue'
+    image: '/img/Assassins Creed IV Black Flag.webp'
   },
   {
     id: nanoid(6),
@@ -95,7 +59,7 @@ let products = [
     price: 1499,
     stock: 10,
     rating: 4.5,
-    image: 'ac_3'
+    image: '/img/Assassins Creed III Remastered.webp'
   },
   {
     id: nanoid(6),
@@ -105,32 +69,14 @@ let products = [
     price: 2499,
     stock: 15,
     rating: 4.9,
-    image: 'ac_ezio'
-  },
-  {
-    id: nanoid(6),
-    name: 'Assassin\'s Creed Chronicles Trilogy',
-    category: 'Xbox One',
-    description: 'Три приключения в Китае, Индии и России в уникальном 2.5D стиле',
-    price: 799,
-    stock: 6,
-    rating: 4.0,
-    image: 'ac_chronicles'
-  },
-  {
-    id: nanoid(6),
-    name: 'Assassin\'s Creed Liberation HD',
-    category: 'Xbox One, Xbox 360',
-    description: 'История первой женщины-ассасина в сеттинге Нового Орлеана XVIII века',
-    price: 599,
-    stock: 10,
-    rating: 4.1,
-    image: 'ac_liberation'
+    image: '/img/Assassins Creed Ezio Collection.webp'
   }
 ];
 
 // Middleware для парсинга JSON
 app.use(express.json());
+
+app.use('/img', express.static(path.join(__dirname, 'img')));
 
 // CORS настройка (для связи с фронтендом)
 app.use(cors({

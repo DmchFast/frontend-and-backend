@@ -8,29 +8,60 @@ const apiClient = axios.create({
   }
 });
 
+// Базовый URL для изображений
+const IMAGE_BASE_URL = "http://localhost:3000";
+
+// Функция для обработки изображения
+const processImage = (imagePath) => {
+  // Если изображения нет или это заглушка, возвращаем null
+  if (!imagePath || imagePath === 'image' || imagePath === '' || imagePath.includes('undefined')) {
+    return null;
+  }
+  
+  // Если это уже полный URL
+  if (imagePath.startsWith('http')) {
+    return imagePath;
+  }
+  
+  // Относительный путь, добавляем базовый URL бэкенда
+  return `${IMAGE_BASE_URL}${imagePath}`;
+};
+
 export const api = {
   createProduct: async (product) => {
-    let response = await apiClient.post("/products", product);
-    return response.data;
+    const response = await apiClient.post("/products", product);
+    return {
+      ...response.data,
+      image: processImage(response.data.image)
+    };
   },
 
   getProducts: async () => {
-    let response = await apiClient.get("/products");
-    return response.data;
+    const response = await apiClient.get("/products");
+    return response.data.map(product => ({
+      ...product,
+      image: processImage(product.image)
+    }));
   },
 
   getProductById: async (id) => {
-    let response = await apiClient.get(`/products/${id}`);
-    return response.data;
+    const response = await apiClient.get(`/products/${id}`);
+    return {
+      ...response.data,
+      image: processImage(response.data.image)
+    };
   },
 
   updateProduct: async (id, product) => {
-    let response = await apiClient.patch(`/products/${id}`, product);
-    return response.data;
+    const response = await apiClient.patch(`/products/${id}`, product);
+    return {
+      ...response.data,
+      image: processImage(response.data.image)
+    };
   },
 
   deleteProduct: async (id) => {
-    let response = await apiClient.delete(`/products/${id}`);
+    const response = await apiClient.delete(`/products/${id}`);
     return response.data;
   }
 };
