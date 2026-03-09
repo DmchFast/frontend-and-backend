@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ProductsPage.css";
 import ProductsList from "../components/ProductsList";
 import ProductModal from "../components/ProductModal";
+import AuthModal from "../components/AuthModal/AuthModal.jsx";
 import { api } from "../api";
 
 export default function ProductsPage() {
@@ -10,9 +11,16 @@ export default function ProductsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("create");
   const [editingProduct, setEditingProduct] = useState(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     loadProducts();
+    // Проверяем, есть ли сохраненный пользователь
+    const user = api.getCurrentUser();
+    if (user) {
+      setCurrentUser(user);
+    }
   }, []);
 
   const loadProducts = async () => {
@@ -28,12 +36,20 @@ export default function ProductsPage() {
   };
 
   const openCreate = () => {
+    if (!currentUser) {
+      setAuthModalOpen(true);
+      return;
+    }
     setModalMode("create");
     setEditingProduct(null);
     setModalOpen(true);
   };
 
   const openEdit = (product) => {
+    if (!currentUser) {
+      setAuthModalOpen(true);
+      return;
+    }
     setModalMode("edit");
     setEditingProduct(product);
     setModalOpen(true);
@@ -45,6 +61,11 @@ export default function ProductsPage() {
   };
 
   const handleDelete = async (id) => {
+    if (!currentUser) {
+      setAuthModalOpen(true);
+      return;
+    }
+    
     if (!window.confirm("Удалить игру?")) return;
     
     try {
@@ -70,19 +91,47 @@ export default function ProductsPage() {
     }
   };
 
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+    setAuthModalOpen(false);
+  };
+
+  const handleLogout = () => {
+    api.logout();
+    setCurrentUser(null);
+  };
+
   return (
     <div className="page">
       <header className="header">
         <h1>Xbox Games Store</h1>
+        <div className="header-actions">
+          {currentUser ? (
+            <div className="user-info">
+              <span className="user-name">
+                {currentUser.first_name} {currentUser.last_name}
+              </span>
+              <button className="btn-logout" onClick={handleLogout}>
+                Выйти
+              </button>
+            </div>
+          ) : (
+            <button className="btn-login" onClick={() => setAuthModalOpen(true)}>
+              Войти
+            </button>
+          )}
+        </div>
       </header>
       
       <main className="main">
         <div className="container">
           <div className="toolbar">
             <h2>Assassin's Creed</h2>
-            <button className="btn-add" onClick={openCreate}>
-              Добавить
-            </button>
+            {currentUser && ( // <<< Кнопка только для авторизованных
+              <button className="btn-add" onClick={openCreate}>
+                Добавить
+              </button>
+            )}
           </div>
           
           {loading ? (
@@ -92,6 +141,7 @@ export default function ProductsPage() {
               products={products}
               onEdit={openEdit}
               onDelete={handleDelete}
+              canEdit={!!currentUser}
             />
           )}
         </div>
@@ -107,6 +157,12 @@ export default function ProductsPage() {
         initialProduct={editingProduct}
         onClose={closeModal}
         onSubmit={handleSubmit}
+      />
+      
+      <AuthModal
+        open={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onLogin={handleLogin}
       />
     </div>
   );

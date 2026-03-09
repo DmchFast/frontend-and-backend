@@ -95,7 +95,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ========== ХЕЛПЕРЫ ДЛЯ РАБОТЫ С ПАРОЛЯМИ ==========
+// хелпер для паролей
 async function hashPassword(password) {
   const rounds = 10;
   return bcrypt.hash(password, rounds);
