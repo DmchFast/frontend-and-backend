@@ -1,0 +1,23 @@
+info:
+  name: PATCH Product Card
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: http://localhost:3000/api/products/nEwXiQ
+  body:
+    type: json
+    data: |-
+      {
+        "price": 1299,
+        "stock": 10,
+        "rating": 4.8
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
