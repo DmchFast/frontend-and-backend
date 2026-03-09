@@ -7,6 +7,25 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+const createBaseUser = async () => {
+  const hashedPassword = await bcrypt.hash('admin', 10);
+  return {
+    id: nanoid(),
+    email: 'admin@test.ru',
+    first_name: 'Админ',
+    last_name: 'Админ',
+    hashedPassword
+  };
+};
+
+(async () => {
+  const baseUser = await createBaseUser();
+  users.push(baseUser);
+  console.log('\nБазовый пользователь создан');
+
+})();
+
+
 // Товары
 let users = [];
 let products = [
