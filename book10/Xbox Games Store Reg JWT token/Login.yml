@@ -1,0 +1,30 @@
+info:
+  name: Login
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/auth/login"
+  headers:
+    Content-Type: application/json
+  body: 
+    json: {
+      "email": "admin@test.ru",
+      "password": "admin"
+    }
+
+script:post-response |
+  const response = res.getBody();
+  const json = JSON.parse(response);
+  
+  if (json.accessToken) {
+    bru.setEnvVar("auth_token", json.accessToken);
+    console.log("✅ Токен сохранен:", json.accessToken);
+  }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
