@@ -8,28 +8,17 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-const createBaseUser = async () => {
-  const hashedPassword = await bcrypt.hash('admin', 10);
-  return {
-    id: nanoid(),
-    email: 'admin@test.ru',
-    first_name: 'Админ',
-    last_name: 'Админ',
-    hashedPassword
-  };
-};
-
-(async () => {
-  const baseUser = await createBaseUser();
-  users.push(baseUser);
-  console.log('\nБазовый пользователь создан');
-})();
-
-// JWT
+// JWT access
 const JWT_SECRET = 'your-secret-key-change-in-production';
 const ACCESS_EXPIRES_IN = '15m';
 
-// Товары
+// JWT refresh
+const REFRESH_SECRET = "refresh_secret";
+const REFRESH_EXPIRES_IN = "7d";
+
+const refreshTokens = new Set(); // хранилище
+
+// Товары и пользователи
 let users = [];
 let products = [
   {
@@ -117,7 +106,25 @@ app.use((req, res, next) => {
   next();
 });
 
-// хелпер для паролей
+// Создание базового пользователя
+const createBaseUser = async () => {
+  const hashedPassword = await bcrypt.hash('admin', 10);
+  return {
+    id: nanoid(),
+    email: 'admin@test.ru',
+    first_name: 'Админ',
+    last_name: 'Админ',
+    hashedPassword
+  };
+};
+
+(async () => {
+  const baseUser = await createBaseUser();
+  users.push(baseUser);
+  console.log('\nБазовый пользователь создан');
+})();
+
+// Хелперы для паролей
 async function hashPassword(password) {
   const rounds = 10;
   return bcrypt.hash(password, rounds);
@@ -125,6 +132,33 @@ async function hashPassword(password) {
 
 async function verifyPassword(password, passwordHash) {
   return bcrypt.compare(password, passwordHash);
+}
+
+// Генерация токенов access и refresh
+function generateAccessToken(user) {
+  return jwt.sign(
+    { 
+      sub: user.id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name
+    },
+    JWT_SECRET,
+    { expiresIn: ACCESS_EXPIRES_IN }
+  );
+}
+
+function generateRefreshToken(user) {
+  return jwt.sign(
+    { 
+      sub: user.id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name
+    },
+    REFRESH_SECRET,
+    { expiresIn: REFRESH_EXPIRES_IN }
+  );
 }
 
 // JWT middleware
@@ -152,9 +186,7 @@ function authMiddleware(req, res, next) {
   }
 }
 
-
-// Вход, регистр маршруты
-
+// Регистрация
 app.post('/api/auth/register', async (req, res) => {
   const { email, first_name, last_name, password } = req.body;
 
@@ -220,25 +252,61 @@ app.post('/api/auth/login', async (req, res) => {
     });
   }
 
-  // Создаем JWT токен
-  const accessToken = jwt.sign(
-    { 
-      sub: user.id,
-      email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name
-    },
-    JWT_SECRET,
-    { expiresIn: ACCESS_EXPIRES_IN }
-  );
-
-  const { hashedPassword, ...userWithoutPassword } = user;
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
   
+  refreshTokens.add(refreshToken);
+
   res.status(200).json({ 
-    success: true,
     accessToken,
-    user: userWithoutPassword 
+    refreshToken
   });
+});
+
+
+app.post("/api/auth/refresh", (req, res) => {
+  const { refreshToken } = req.body;
+  
+  if (!refreshToken) {
+    return res.status(400).json({
+      error: "refreshToken is required",
+    });
+  }
+  
+  // Есть токен в хранилище
+  if (!refreshTokens.has(refreshToken)) {
+    return res.status(401).json({
+      error: "Invalid refresh token",
+    });
+  }
+
+  try {
+    const payload = jwt.verify(refreshToken, REFRESH_SECRET);
+    const user = users.find((u) => u.id === payload.sub);
+    
+    if (!user) {
+      return res.status(401).json({
+        error: "User not found",
+      });
+    }
+    
+    // Ротация refresh-токена
+    refreshTokens.delete(refreshToken);
+    const newAccessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
+    refreshTokens.add(newRefreshToken);
+    
+    res.json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    });
+    
+  } catch (err) {
+    refreshTokens.delete(refreshToken);
+    return res.status(401).json({
+      error: "Invalid or expired refresh token",
+    });
+  }
 });
 
 app.get('/api/auth/me', authMiddleware, (req, res) => {
@@ -352,6 +420,8 @@ app.listen(port, () => {
   console.log('  Аутентификация:');
   console.log('    POST /api/auth/register');
   console.log('    POST /api/auth/login');
+  console.log('    POST /api/auth/refresh');
+  console.log('    GET /api/auth/me');
   console.log('  Товары:');
   console.log('    GET /api/products');
   console.log('    GET /api/products/:id');
