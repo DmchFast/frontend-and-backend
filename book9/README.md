@@ -1,4 +1,4 @@
-# Практическое задание №8: JSON Refresh-tokens
+# Практическое задание №9: JSON Refresh-tokens
 
 ## 1. Регистрация пользователя
 ![POST_REG_USER](/book9/assets.md/POST%20Reg%20user.png)
