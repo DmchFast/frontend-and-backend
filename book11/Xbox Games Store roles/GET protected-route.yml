@@ -1,0 +1,17 @@
+info:
+  name: GET protected-route
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://localhost:3000/api/protected-route
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJYWnBZVmVGWndDeW9WUThtOXhZSXoiLCJlbWFpbCI6InVzZXJAdGVzdC5ydSIsImZpcnN0X25hbWUiOiLQn9C-0LvRjNC30L7QstCw0YLQtdC70YwiLCJsYXN0X25hbWUiOiLQn9C-0LvRjNC30L7QstCw0YLQtdC70YwiLCJyb2xlIjoidXNlciIsImlhdCI6MTc3MzkwNTQ1OCwiZXhwIjoxNzczOTA2MzU4fQ.0h1ivbcqoiOuehfW7J1Ay1SWklpXc8i4PQoSXkU_YCU
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
