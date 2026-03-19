@@ -1,7 +1,7 @@
 import React from "react";
 import ProductItem from "./ProductItem";
 
-export default function ProductsList({ products, onEdit, onDelete, canEdit }) {
+export default function ProductsList({ products, onEdit, onDelete, canEdit, canDelete }) {
   if (!products.length) {
     return <div className="empty">Игр пока нет</div>;
   }
@@ -15,6 +15,7 @@ export default function ProductsList({ products, onEdit, onDelete, canEdit }) {
           onEdit={onEdit} 
           onDelete={onDelete}
           canEdit={canEdit}
+          canDelete={canDelete}
         />
       ))}
     </div>

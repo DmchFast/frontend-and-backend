@@ -105,9 +105,8 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
         
       } catch (refreshError) {
-        // Если не удалось обновить токен - разлогиниваем
+        // Если не удалось обновить токен - разлогиниваем, но не перезагружаем страницу
         clearAuth();
-        window.location.reload();
         return Promise.reject(refreshError);
       }
     }
@@ -191,6 +190,21 @@ export const api = {
 
   deleteProduct: async (id) => {
     const response = await apiClient.delete(`/products/${id}`);
+    return response.data;
+  },
+  // Управление пользователями
+  getUsers: async () => {
+    const response = await apiClient.get('/users');
+    return response.data;
+  },
+
+  updateUser: async (id, data) => {
+    const response = await apiClient.put(`/users/${id}`, data);
+    return response.data;
+  },
+
+  deleteUser: async (id) => {
+    const response = await apiClient.delete(`/users/${id}`);
     return response.data;
   }
 };

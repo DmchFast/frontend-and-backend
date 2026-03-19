@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ProductItem({ product, onEdit, onDelete, canEdit }) {
+export default function ProductItem({ product, onEdit, onDelete, canEdit, canDelete }) {
   const hasImage = product.image && product.image !== 'image' && !product.image.includes('undefined');
 
   return (
@@ -25,16 +25,18 @@ export default function ProductItem({ product, onEdit, onDelete, canEdit }) {
           )}
         </div>
       </div>
-      {canEdit && ( //показ кнопок при входе в акк
-        <div className="product-actions">
+      <div className="product-actions">
+        {canEdit && ( //показ кнопок при входе в акк
           <button className="btn btn-edit" onClick={() => onEdit(product)}>
             Изменить
           </button>
+        )}
+        {canDelete && (
           <button className="btn btn-delete" onClick={() => onDelete(product.id)}>
             Удалить
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

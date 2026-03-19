@@ -4,6 +4,7 @@ import axios from "axios";
 import ProductsList from "../components/ProductsList";
 import ProductModal from "../components/ProductModal";
 import AuthModal from "../components/AuthModal/AuthModal.jsx";
+import UserManagement from "../components/UserManagement";
 import { api } from "../api";
 
 export default function ProductsPage() {
@@ -14,6 +15,7 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [userModalOpen, setUserModalOpen] = useState(false);
 
 useEffect(() => {
   loadProducts();
@@ -65,17 +67,26 @@ useEffect(() => {
       const data = await api.getProducts();
       setProducts(data);
     } catch (err) {
-      console.error("Ошибка загрузки:", err);
+      // Если ошибка 401, просто показываем пустой список (пользователь не авторизован)
+      console.error("Ошибка загрузки товаров:", err);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
   };
+
+  // Проверка ролей
+  const canCreateProduct = currentUser && (currentUser.role === 'seller' || currentUser.role === 'admin');
+  const canEditProduct = currentUser && (currentUser.role === 'seller' || currentUser.role === 'admin');
+  const canDeleteProduct = currentUser && currentUser.role === 'admin';
+  const isAdmin = currentUser?.role === 'admin';
 
   const openCreate = () => {
     if (!currentUser) {
       setAuthModalOpen(true);
       return;
     }
+
     setModalMode("create");
     setEditingProduct(null);
     setModalOpen(true);
@@ -99,6 +110,12 @@ useEffect(() => {
   const handleDelete = async (id) => {
     if (!currentUser) {
       setAuthModalOpen(true);
+      return;
+    }
+    
+    // Проверка на удаление
+    if (!canDeleteProduct) {
+      alert('У вас нет прав для удаления товара');
       return;
     }
     
@@ -130,11 +147,15 @@ useEffect(() => {
   const handleLogin = (user) => {
     setCurrentUser(user);
     setAuthModalOpen(false);
+    // Перезагружаем товары после входа, чтобы они отобразились
+    loadProducts();
   };
 
   const handleLogout = () => {
     api.logout();
     setCurrentUser(null);
+    // Очищаем товары при выходе
+    setProducts([]);
   };
 
   return (
@@ -147,6 +168,11 @@ useEffect(() => {
               <span className="user-name">
                 {currentUser.first_name} {currentUser.last_name}
               </span>
+              {isAdmin && (
+                <button className="btn-admin" onClick={() => setUserModalOpen(true)}>
+                  Управление пользователями
+                </button>
+              )}
               <button className="btn-logout" onClick={handleLogout}>
                 Выйти
               </button>
@@ -163,7 +189,7 @@ useEffect(() => {
         <div className="container">
           <div className="toolbar">
             <h2>Assassin's Creed</h2>
-            {currentUser && ( // <<< Кнопка только для авторизованных
+            {canCreateProduct && (
               <button className="btn-add" onClick={openCreate}>
                 Добавить
               </button>
@@ -177,7 +203,9 @@ useEffect(() => {
               products={products}
               onEdit={openEdit}
               onDelete={handleDelete}
-              canEdit={!!currentUser}
+              // Отдельные права на редактирование и удаление
+              canEdit={canEditProduct}
+              canDelete={canDeleteProduct}
             />
           )}
         </div>
@@ -199,6 +227,11 @@ useEffect(() => {
         open={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         onLogin={handleLogin}
+      />
+
+      <UserManagement
+        open={userModalOpen}
+        onClose={() => setUserModalOpen(false)}
       />
     </div>
   );
