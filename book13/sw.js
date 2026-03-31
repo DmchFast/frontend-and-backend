@@ -4,6 +4,7 @@ const ASSETS = [
    './index.html',
    './app.js'
 ];
+
 self.addEventListener('install', event => {
    event.waitUntil(
       caches.open(CACHE_NAME)
@@ -11,6 +12,7 @@ self.addEventListener('install', event => {
          .then(() => self.skipWaiting())
    );
 });
+
 self.addEventListener('activate', event => {
    event.waitUntil(
       caches.keys().then(keys => {
@@ -20,7 +22,8 @@ self.addEventListener('activate', event => {
          );
       }).then(() => self.clients.claim()) // для моментального контроля над страницами
    );
-});
+})
+
 self.addEventListener('fetch', event => {
    event.respondWith(
       caches.match(event.request)
