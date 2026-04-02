@@ -1,3 +1,8 @@
 # book15 key
 book15/localhost+2-key.pem
 book15/localhost+2.pem
+
+# book16 node_modules and key
+book16/node_modules/
+book16/localhost+2-key.pem
+book16/localhost+2.pem
