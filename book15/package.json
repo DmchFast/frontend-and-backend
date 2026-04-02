@@ -1,0 +1,6 @@
+{
+   "name": "notes-app",
+   "scripts": {
+      "http-server": "http-server --ssl --cert localhost+2.pem --key localhost+2-key.pem -p 3000"
+   }
+}
