@@ -43,6 +43,9 @@ socket.on('taskAdded', (task) => {
 function initNotes() {
     const form = document.getElementById('note-form');
     const input = document.getElementById('note-input');
+    const reminderForm = document.getElementById('reminder-form');
+    const reminderText = document.getElementById('reminder-text');
+    const reminderTime = document.getElementById('reminder-time');
     const list = document.getElementById('notes-list');
 
     if (!form || !input || !list) return;  // защита
@@ -59,22 +62,37 @@ function initNotes() {
     // Загрузка заметок из localStorage при старте
     function loadNotes() {
         const notes = JSON.parse(localStorage.getItem('notes') || '[]');
-        // Применяем экранирование
-        list.innerHTML = notes.map(note => `<li>${escapeHtml(note)}</li>`).join('');
+        list.innerHTML = notes.map(note => {
+            let reminderInfo = '';
+            if (note.reminder) {
+                const date = new Date(note.reminder);
+                reminderInfo = '<br><small>!!! Напоминание: ' + date.toLocaleString() + '</small>';
+            }
+            return '<li class="card" style="margin-bottom: 0.5rem; padding: 0.5rem;">' + escapeHtml(note.text) + reminderInfo + '</li>';
+        }).join('');
     }
 
-    // Сохранение заметки
-    function addNote(text) {
+    // Сохранение заметки (единая функция, как в документе)
+    function addNote(text, reminderTimestamp = null) {
         const notes = JSON.parse(localStorage.getItem('notes') || '[]');
-        notes.push(text);
+        const newNote = { id: Date.now(), text: text, reminder: reminderTimestamp };
+        notes.push(newNote);
         localStorage.setItem('notes', JSON.stringify(notes));
         loadNotes();
-        
-        // Отправка события при добавлении задачи
-        socket.emit('newTask', { text: text, timestamp: Date.now() });
+
+        // Отправляем событие на сервер  (только если есть напоминание)
+        if (reminderTimestamp) {
+            socket.emit('newReminder', {
+                id: newNote.id,
+                text: text,
+                reminderTime: reminderTimestamp
+            });
+        } else {
+            socket.emit('newTask', { text: text, timestamp: Date.now() });
+        }
     }
 
-    // Обработка отправки формы
+    // Обработка обычной заметки
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const text = input.value.trim();
@@ -84,7 +102,25 @@ function initNotes() {
         }
     });
 
-    // Первоначальная загрузка
+    // Обработка заметки с напоминанием
+    if (reminderForm && reminderText && reminderTime) {
+        reminderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = reminderText.value.trim();
+            const datetime = reminderTime.value;
+            if (text && datetime) {
+                const timestamp = new Date(datetime).getTime();
+                if (timestamp > Date.now()) {
+                    addNote(text, timestamp);
+                    reminderText.value = '';
+                    reminderTime.value = '';
+                } else {
+                    alert('Дата напоминания должна быть в будущем');
+                }
+            }
+        });
+    }
+
     loadNotes();
 }
 
