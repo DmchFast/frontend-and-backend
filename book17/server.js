@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, './')));
 
 let subscriptions = [];
 
-// Хранилище активных напоминаний: ключ - id заметки, значение - объект с таймером и данными
+// Хранилище активных напоминаний
 const reminders = new Map();
 
 const server = http.createServer(app);
@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
       const timeoutId = setTimeout(() => {
          // Отправляем push-уведомление всем подписанным клиентам
          const payload = JSON.stringify({
-            title: '!!! Напоминание',
+            title: '⏰ Напоминание',
             body: text,
             reminderId: id
          });

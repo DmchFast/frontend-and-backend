@@ -51,6 +51,7 @@ function initNotes() {
     if (!form || !input || !list) return;  // защита
 
     function escapeHtml(str) {
+        if (!str) return '';
         return str.replace(/[&<>]/g, function (m) {
             if (m === '&') return '&amp;';
             if (m === '<') return '&lt;';
@@ -59,14 +60,35 @@ function initNotes() {
         });
     }
 
+    // Миграция старых данных
+    function migrateNotes() {
+        let notes = JSON.parse(localStorage.getItem('notes') || '[]');
+        let changed = false;
+        if (notes.length > 0 && typeof notes[0] === 'string') {
+            notes = notes.map(text => ({ id: Date.now() + Math.random(), text: text, reminder: null }));
+            changed = true;
+        } else {
+            // Проверяем, что у каждого объекта есть поле text
+            const validNotes = notes.filter(note => note && typeof note === 'object' && note.text !== undefined);
+            if (validNotes.length !== notes.length) {
+                notes = validNotes;
+                changed = true;
+            }
+        }
+        if (changed) {
+            localStorage.setItem('notes', JSON.stringify(notes));
+        }
+        return notes;
+    }
+
     // Загрузка заметок из localStorage при старте
     function loadNotes() {
-        const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+        let notes = migrateNotes();
         list.innerHTML = notes.map(note => {
             let reminderInfo = '';
             if (note.reminder) {
                 const date = new Date(note.reminder);
-                reminderInfo = '<br><small>!!! Напоминание: ' + date.toLocaleString() + '</small>';
+                reminderInfo = '<br><small>⏰  Напоминание: ' + date.toLocaleString() + '</small>';
             }
             return '<li class="card" style="margin-bottom: 0.5rem; padding: 0.5rem;">' + escapeHtml(note.text) + reminderInfo + '</li>';
         }).join('');
