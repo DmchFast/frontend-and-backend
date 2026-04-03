@@ -91,6 +91,38 @@ app.post('/unsubscribe', (req, res) => {
    res.status(200).json({ message: 'Подписка удалена' });
 });
 
+// Эндпоинт откладывания напоминания на 5 минут
+app.post('/snooze', (req, res) => {
+   const reminderId = parseInt(req.query.reminderId, 10);
+   if (!reminderId || !reminders.has(reminderId)) {
+      return res.status(400).json({ error: 'Reminder not found' });
+   }
+
+   const reminder = reminders.get(reminderId);
+   // Отменяем предыдущий таймер
+   clearTimeout(reminder.timeoutId);
+
+   // Устанавливаем новый через 5 минут (300 000 мс)
+   const newDelay = 5 * 60 * 1000; 
+   const newTimeoutId = setTimeout(() => {
+      const payload = JSON.stringify({
+         title: 'Напоминание отложено',
+         body: reminder.text,
+         reminderId: reminderId
+      });
+
+      subscriptions.forEach(sub => {
+         webpush.sendNotification(sub, payload).catch(err => console.error('Push error:', err));
+      });
+
+      reminders.delete(reminderId);
+   }, newDelay);
+
+   // Обновляем хранилище
+   reminders.set(reminderId, { timeoutId: newTimeoutId, text: reminder.text, reminderTime: Date.now() + newDelay });
+   res.status(200).json({ message: 'Reminder snoozed for 5 minutes' });
+});
+
 const PORT = 3001;
 server.listen(PORT, () => {
    console.log(`Сервер запущен на http://localhost:${PORT}`);
