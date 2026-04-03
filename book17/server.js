@@ -25,6 +25,9 @@ app.use(express.static(path.join(__dirname, './')));
 
 let subscriptions = [];
 
+// Хранилище активных напоминаний: ключ - id заметки, значение - объект с таймером и данными
+const reminders = new Map();
+
 const server = http.createServer(app);
 const io = socketIo(server, {
    cors: { origin: "*", methods: ["GET", "POST"] }
@@ -44,6 +47,32 @@ io.on('connection', (socket) => {
       subscriptions.forEach(sub => {
          webpush.sendNotification(sub, payload).catch(err => console.error('Push error:', err));
       });
+   });
+
+   // Обработка нового напоминания от клиента
+   socket.on('newReminder', (reminder) => {
+      const { id, text, reminderTime } = reminder;
+      const delay = reminderTime - Date.now();
+      if (delay <= 0) return;
+
+      // Сохраняем таймер
+      const timeoutId = setTimeout(() => {
+         // Отправляем push-уведомление всем подписанным клиентам
+         const payload = JSON.stringify({
+            title: '!!! Напоминание',
+            body: text,
+            reminderId: id
+         });
+
+         subscriptions.forEach(sub => {
+            webpush.sendNotification(sub, payload).catch(err => console.error('Push error:', err));
+         });
+
+         // Удаляем напоминание из хранилища после отправки
+         reminders.delete(id);
+      }, delay);
+
+      reminders.set(id, { timeoutId, text, reminderTime });
    });
 
    socket.on('disconnect', () => {
