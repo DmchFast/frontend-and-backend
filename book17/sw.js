@@ -98,15 +98,36 @@ self.addEventListener('notificationclick', (event) => {
 
     if (action === 'snooze') {
         // Получаем id напоминания из данных уведомления
-        const reminderId = notification.data.reminderId;
+        let reminderId = notification.data.reminderId;
+        if (!reminderId) {
+            console.error('Snooze failed: reminderId отсутствует');
+            notification.close();
+            return;
+        }
+        // Преобразуем в число (сервер ожидает число через parseInt)
+        const numericId = Number(reminderId);
         // Отправляем запрос на сервер для откладывания
         event.waitUntil(
-            fetch(`/snooze?reminderId=${reminderId}`, { method: 'POST' })
+            fetch(`/snooze?reminderId=${numericId}`, { method: 'POST' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Сервер ответил ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(() => notification.close())
-                .catch(err => console.error('Snooze failed: ', err))
+                .catch(err => {
+                    console.error('Snooze failed: ', err);
+                    // Показываем уведомление об ошибке, чтобы пользователь знал
+                    self.registration.showNotification('Ошибка откладывания', {
+                        body: 'Не удалось отложить напоминание. Попробуйте позже.',
+                        icon: './icons/favicon-128x128.png'
+                    });
+                    notification.close();
+                })
         );
     } else {
-        // При клике на само уведомление просто закрываем его
+        
         notification.close();
     }
 });

@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
       const delay = reminderTime - Date.now();
       if (delay <= 0) return;
 
-      // Сохраняем таймер
+      // Сохраняем таймер основной
       const timeoutId = setTimeout(() => {
          // Отправляем push-уведомление всем подписанным клиентам
          const payload = JSON.stringify({
@@ -69,10 +69,21 @@ io.on('connection', (socket) => {
          });
 
          // Удаляем напоминание из хранилища после отправки
-         reminders.delete(id);
+         const deleteTimeoutId = setTimeout(() => {
+            reminders.delete(id);
+            console.log(`Напоминание ${id} удалено (не отложено)`);
+         }, 30 * 1000);
+
+         if (reminders.has(id)) {
+            const existing = reminders.get(id);
+            if (existing.timeoutId) clearTimeout(existing.timeoutId);
+            reminders.set(id, { timeoutId: null, deleteTimeoutId, text, reminderTime });
+         } else {
+            reminders.set(id, { timeoutId: null, deleteTimeoutId, text, reminderTime });
+         }
       }, delay);
 
-      reminders.set(id, { timeoutId, text, reminderTime });
+      reminders.set(id, { timeoutId, deleteTimeoutId: null, text, reminderTime });
    });
 
    socket.on('disconnect', () => {
@@ -94,16 +105,28 @@ app.post('/unsubscribe', (req, res) => {
 // Эндпоинт откладывания напоминания на 5 минут
 app.post('/snooze', (req, res) => {
    const reminderId = parseInt(req.query.reminderId, 10);
-   if (!reminderId || !reminders.has(reminderId)) {
+   if (!reminderId) {
+      return res.status(400).json({ error: 'reminderId не указан' });
+   }
+
+   // Проверка напоминания
+   if (!reminders.has(reminderId)) {
       return res.status(400).json({ error: 'Reminder not found' });
    }
 
    const reminder = reminders.get(reminderId);
-   // Отменяем предыдущий таймер
-   clearTimeout(reminder.timeoutId);
+
+   // Отменяем основной таймер
+   if (reminder.timeoutId) {
+      clearTimeout(reminder.timeoutId);
+   }
+   // Отмена таймера удаления
+   if (reminder.deleteTimeoutId) {
+      clearTimeout(reminder.deleteTimeoutId);
+   }
 
    // Устанавливаем новый через 5 минут (300 000 мс)
-   const newDelay = 5 * 60 * 1000; 
+   const newDelay = 5 * 60 * 1000;
    const newTimeoutId = setTimeout(() => {
       const payload = JSON.stringify({
          title: 'Напоминание отложено',
@@ -119,7 +142,14 @@ app.post('/snooze', (req, res) => {
    }, newDelay);
 
    // Обновляем хранилище
-   reminders.set(reminderId, { timeoutId: newTimeoutId, text: reminder.text, reminderTime: Date.now() + newDelay });
+   reminders.set(reminderId, {
+      timeoutId: newTimeoutId,
+      deleteTimeoutId: null,
+      text: reminder.text,
+      reminderTime: Date.now() + newDelay
+   });
+
+   console.log(`Напоминание "${reminder.text}" отложено на 5 минут`);
    res.status(200).json({ message: 'Reminder snoozed for 5 minutes' });
 });
 
