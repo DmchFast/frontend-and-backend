@@ -3,7 +3,6 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34C26?style=for-the-badge&logo=html5&logoColor=E34C26&label=HTML&labelColor=303030)]()
 [![CSS3](https://img.shields.io/badge/CSS3-264DE4?style=for-the-badge&logo=css&logoColor=264DE4&label=CSS&labelColor=303030)]()
 [![SCSS](https://img.shields.io/badge/1.97.3-C76494?style=for-the-badge&logo=sass&logoColor=C76494&label=SCSS&labelColor=303030)]()
-
 [![Nodejs](https://img.shields.io/badge/22.19.0-3C873A?style=for-the-badge&logo=node.js&label=Nodejs&labelColor=303030)]()
 [![React](https://img.shields.io/badge/19.2.7-61DAFB?style=for-the-badge&logo=react&label=React&labelColor=20232A)]()
 [![Express](https://img.shields.io/badge/5.2.1-404d59?style=for-the-badge&logo=express&logoColor=58b7d3&label=Express&labelColor=303030)]()
