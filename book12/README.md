@@ -1,5 +1,10 @@
 # Практическое задание №12: Отчёт по всей работе
 
+[![Nodejs](https://img.shields.io/badge/22.19.0-3C873A?style=for-the-badge&logo=node.js&label=Nodejs&labelColor=303030)]()
+[![React](https://img.shields.io/badge/19.2.7-61DAFB?style=for-the-badge&logo=react&label=React&labelColor=20232A)]()
+[![express](https://img.shields.io/badge/5.2.1-999999?style=for-the-badge&logo=express&label=express&labelColor=333333)]()
+[![axios](https://img.shields.io/badge/1.13.5-999999?style=for-the-badge&logo=axios&label=axios&labelColor=333333)]()
+
 ## Структура проекта
 
 ```
