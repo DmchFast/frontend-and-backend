@@ -1,4 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const express = require('express');
+const app = express();
+
+app.use(express.json());
 
 // Подключение к базе данных PostgreSQL
 const sequelize = new Sequelize('back_users_db_19', 'postgres', 'EnD37927', {
@@ -24,3 +28,8 @@ const User = sequelize.define('User', {
 
 // Синхронизация с БД
 sequelize.sync({ force: false });
+
+// Запуск сервера
+app.listen(3000, () => {
+   console.log('Server is running on http://localhost:3000');
+});
