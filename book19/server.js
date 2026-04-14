@@ -33,3 +33,36 @@ sequelize.sync({ force: false });
 app.listen(3000, () => {
    console.log('Server is running on http://localhost:3000');
 });
+
+// CRUD операции
+
+// POST /api/users
+app.post('/api/users', async (req, res) => {
+   try {
+      const user = await User.create(req.body);
+      res.status(201).send(user);
+   } catch (err) {
+      res.status(400).send(err.message);
+   }
+});
+
+// GET /api/users
+app.get('/api/users', async (req, res) => {
+   try {
+      const users = await User.findAll();
+      res.send(users);
+   } catch (err) {
+      res.status(500).send(err.message);
+   }
+});
+
+// GET /api/users/:id
+app.get('/api/users/:id', async (req, res) => {
+   try {
+      const user = await User.findByPk(req.params.id);
+      if (!user) return res.status(404).send({ message: 'User not found' });
+      res.send(user);
+   } catch (err) {
+      res.status(500).send(err.message);
+   }
+});
