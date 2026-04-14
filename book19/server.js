@@ -66,3 +66,27 @@ app.get('/api/users/:id', async (req, res) => {
       res.status(500).send(err.message);
    }
 });
+
+// PATCH /api/users/:id
+app.patch('/api/users/:id', async (req, res) => {
+   try {
+      const updateData = { ...req.body, updated_at: new Date() };
+      const user = await User.update(updateData, {
+         where: { id: req.params.id },
+         returning: true,
+      });
+      res.send(user);
+   } catch (err) {
+      res.status(400).send(err.message);
+   }
+});
+
+// DELETE /api/users/:id
+app.delete('/api/users/:id', async (req, res) => {
+   try {
+      await User.destroy({ where: { id: req.params.id } });
+      res.send({ message: 'User deleted' });
+   } catch (err) {
+      res.status(500).send(err.message);
+   }
+});
