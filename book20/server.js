@@ -13,7 +13,7 @@ mongoose.connect('mongodb://YourMongoAdmin:1234@localhost:27017/back_users_db_20
    .then(() => console.log('Connected to MongoDB'))
    .catch(err => console.error('Connection error:', err));
 
-   // Определение модели User
+// Определение модели User
 const userSchema = new mongoose.Schema({
    first_name: { type: String, required: true },
    last_name: { type: String, required: true },
@@ -27,4 +27,38 @@ const User = mongoose.model('User', userSchema);
 // Запуск сервера
 app.listen(3000, () => {
    console.log('Server is running on http://localhost:3000');
+});
+
+// CRUD операции
+
+// POST /api/users
+app.post('/api/users', async (req, res) => {
+   try {
+      const user = new User(req.body);
+      await user.save();
+      res.status(201).send(user);
+   } catch (err) {
+      res.status(400).send(err.message);
+   }
+});
+
+// GET /api/users
+app.get('/api/users', async (req, res) => {
+   try {
+      const users = await User.find();
+      res.send(users);
+   } catch (err) {
+      res.status(500).send(err.message);
+   }
+});
+
+// GET /api/users/:id
+app.get('/api/users/:id', async (req, res) => {
+   try {
+      const user = await User.findById(req.params.id);
+      if (!user) return res.status(404).send({ message: 'User not found' });
+      res.send(user);
+   } catch (err) {
+      res.status(500).send(err.message);
+   }
 });
