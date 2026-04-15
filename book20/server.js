@@ -5,11 +5,9 @@ const app = express();
 app.use(express.json());
 
 // Подключение к базе данных MongoDB
-mongoose.connect('mongodb://YourMongoAdmin:1234@localhost:27017/back_users_db_20', {
-   useNewUrlParser: true,
-   useUnifiedTopology: true
-})
-   // Проверка подключения к базе данных
+mongoose.connect('mongodb://YourMongoAdmin:1234@localhost:27017/back_users_db_20?authSource=admin')
+
+// Проверка подключения к базе данных
    .then(() => console.log('Connected to MongoDB'))
    .catch(err => console.error('Connection error:', err));
 
@@ -58,6 +56,33 @@ app.get('/api/users/:id', async (req, res) => {
       const user = await User.findById(req.params.id);
       if (!user) return res.status(404).send({ message: 'User not found' });
       res.send(user);
+   } catch (err) {
+      res.status(500).send(err.message);
+   }
+});
+
+// PATCH /api/users/:id
+app.patch('/api/users/:id', async (req, res) => {
+   try {
+      const updateData = { ...req.body, updated_at: Date.now() };
+      const user = await User.findByIdAndUpdate(
+         req.params.id,
+         updateData,
+         { new: true }
+      );
+      if (!user) return res.status(404).send({ message: 'User not found' });
+      res.send(user);
+   } catch (err) {
+      res.status(400).send(err.message);
+   }
+});
+
+// DELETE /api/users/:id
+app.delete('/api/users/:id', async (req, res) => {
+   try {
+      const user = await User.findByIdAndDelete(req.params.id);
+      if (!user) return res.status(404).send({ message: 'User not found' });
+      res.send({ message: 'User deleted' });
    } catch (err) {
       res.status(500).send(err.message);
    }
