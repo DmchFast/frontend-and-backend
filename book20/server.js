@@ -13,6 +13,17 @@ mongoose.connect('mongodb://YourMongoAdmin:1234@localhost:27017/back_users_db_20
    .then(() => console.log('Connected to MongoDB'))
    .catch(err => console.error('Connection error:', err));
 
+   // Определение модели User
+const userSchema = new mongoose.Schema({
+   first_name: { type: String, required: true },
+   last_name: { type: String, required: true },
+   age: { type: Number, required: true },
+   created_at: { type: Date, default: Date.now },
+   updated_at: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model('User', userSchema);
+
 // Запуск сервера
 app.listen(3000, () => {
    console.log('Server is running on http://localhost:3000');
