@@ -1,4 +1,4 @@
-# Практическое задание №20: Работа с NoSQL СУБД - MongoD
+# Практическое задание №20: Работа с NoSQL СУБД - MongoDB
 
 ## 1. Создание пользователя
 ![POST_ADD_USER](/book20/assets.md/POST%20Sign%20in%20base%20user.png)
