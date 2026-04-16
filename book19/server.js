@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 
 // Подключение к базе данных PostgreSQL
-const sequelize = new Sequelize('back_users_db_19', 'postgres', 'EnD37927', {
+const sequelize = new Sequelize('back_users_db_19', 'postgres', '1234', {
    host: 'localhost',
    dialect: 'postgres',
 });
