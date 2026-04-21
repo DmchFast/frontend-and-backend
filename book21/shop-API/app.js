@@ -424,19 +424,25 @@ app.get('/api/auth/me', authMiddleware, (req, res) => {
 });
 
 // Маршруты admin
-app.get('/api/users', authMiddleware, roleMiddleware(['admin']), (req, res) => {
-  const usersWithoutPassword = users.map(({ hashedPassword, ...rest }) => rest);
-  res.json(usersWithoutPassword);
-});
-
-app.get('/api/users/:id', authMiddleware, roleMiddleware(['admin']), (req, res) => {
-  const user = users.find(u => u.id === req.params.id);
-  if (!user) {
-    return res.status(404).json({ error: 'Пользователь не найден' });
+app.get('/api/users', authMiddleware, roleMiddleware(['admin']), cacheMiddleware(() => 'users:all', USERS_CACHE_TTL),
+  async (req, res) => {
+    const data = users.map(({ hashedPassword, ...rest }) => rest);
+    await saveToCache(req.cacheKey, data, req.cacheTTL);
+    res.json({ source: 'server', data });
   }
-  const { hashedPassword, ...userData } = user;
-  res.json(userData);
-});
+);
+
+app.get('/api/users/:id', authMiddleware, roleMiddleware(['admin']), cacheMiddleware((req) => `users:${req.params.id}`, USERS_CACHE_TTL),
+  async (req, res) => {
+    const user = users.find(u => u.id === req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+    const { hashedPassword, ...data } = user;
+    await saveToCache(req.cacheKey, data, req.cacheTTL);
+    res.json({ source: 'server', data });
+  }
+);
 
 app.put('/api/users/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   const { id } = req.params;
@@ -453,11 +459,13 @@ app.put('/api/users/:id', authMiddleware, roleMiddleware(['admin']), async (req,
   if (last_name) user.last_name = last_name;
   if (role && ['user', 'seller', 'admin'].includes(role)) user.role = role;
   
+  await invalidateUsersCache(user.id);
+
   const { hashedPassword, ...userData } = user;
   res.json(userData);
 });
 
-app.delete('/api/users/:id', authMiddleware, roleMiddleware(['admin']), (req, res) => {
+app.delete('/api/users/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   const { id } = req.params;
   const index = users.findIndex(u => u.id === id);
   if (index === -1) {
@@ -469,6 +477,9 @@ app.delete('/api/users/:id', authMiddleware, roleMiddleware(['admin']), (req, re
   }
   
   users.splice(index, 1);
+
+  await invalidateUsersCache(id);
+
   res.status(204).send();
 });
 
