@@ -19,7 +19,9 @@ const REFRESH_EXPIRES_IN = "7d";
 
 const refreshTokens = new Set(); // хранилище
 
-
+// Время жизни кэша (в секундах)
+const USERS_CACHE_TTL = 60;       // 1 минута
+const PRODUCTS_CACHE_TTL = 600;   // 10 минут
 
 // Товары и пользователи
 let users = [];
@@ -85,6 +87,20 @@ let products = [
     image: '/img/Assassins Creed Ezio Collection.webp'
   }
 ];
+
+// Redis client setup
+const redisClient = createClient({
+  url: 'redis://127.0.0.1:6379'
+});
+
+redisClient.on('error', (err) => {
+  console.error('Redis error:', err);
+});
+
+async function initRedis() {
+  await redisClient.connect();
+  console.log('Redis connected');
+}
 
 // Middleware для парсинга JSON
 app.use(express.json());
@@ -225,6 +241,51 @@ function roleMiddleware(allowedRoles) {
     }
     next(); 
   };
+}
+
+// Кэширование с Redis
+function cacheMiddleware(keyBuilder, ttl) {
+  return async (req, res, next) => {
+    try {
+      const key = keyBuilder(req);
+      const cached = await redisClient.get(key);
+      if (cached) {
+        return res.json({ source: 'cache', data: JSON.parse(cached) });
+      }
+      req.cacheKey = key;
+      req.cacheTTL = ttl;
+      next();
+    } catch (err) {
+      console.error('Cache read error:', err);
+      next();
+    }
+  };
+}
+
+async function saveToCache(key, data, ttl) {
+  try {
+    await redisClient.set(key, JSON.stringify(data), { EX: ttl });
+  } catch (err) {
+    console.error('Cache save error:', err);
+  }
+}
+
+async function invalidateUsersCache(userId = null) {
+  try {
+    await redisClient.del('users:all');
+    if (userId) await redisClient.del(`users:${userId}`);
+  } catch (err) {
+    console.error('Users cache invalidate error:', err);
+  }
+}
+
+async function invalidateProductsCache(productId = null) {
+  try {
+    await redisClient.del('products:all');
+    if (productId) await redisClient.del(`products:${productId}`);
+  } catch (err) {
+    console.error('Products cache invalidate error:', err);
+  }
 }
 
 // Регистрация
@@ -525,23 +586,25 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal server error" });
 });
 
-app.listen(port, () => {
-  console.log(`Сервер запущен на http://localhost:${port}`);
-  console.log('Доступные маршруты:');
-  console.log('  Аутентификация:');
-  console.log('    POST /api/auth/register');
-  console.log('    POST /api/auth/login');
-  console.log('    POST /api/auth/refresh');
-  console.log('    GET /api/auth/me');
-  console.log('  Пользователи (admin only):');
-  console.log('    GET /api/users');
-  console.log('    GET /api/users/:id');
-  console.log('    PUT /api/users/:id');
-  console.log('    DELETE /api/users/:id');
-  console.log('  Товары:');
-  console.log('    GET /api/products');
-  console.log('    GET /api/products/:id');
-  console.log('    POST /api/products (seller/admin)');
-  console.log('    PATCH /api/products/:id (seller/admin)');
-  console.log('    DELETE /api/products/:id (admin)');
+initRedis().then(() => {
+  app.listen(port, () => {
+    console.log(`Сервер запущен на http://localhost:${port}`);
+    console.log('Доступные маршруты:');
+    console.log('  Аутентификация:');
+    console.log('    POST /api/auth/register');
+    console.log('    POST /api/auth/login');
+    console.log('    POST /api/auth/refresh');
+    console.log('    GET /api/auth/me');
+    console.log('  Пользователи (admin only):');
+    console.log('    GET /api/users');
+    console.log('    GET /api/users/:id');
+    console.log('    PUT /api/users/:id');
+    console.log('    DELETE /api/users/:id');
+    console.log('  Товары:');
+    console.log('    GET /api/products');
+    console.log('    GET /api/products/:id');
+    console.log('    POST /api/products (seller/admin)');
+    console.log('    PATCH /api/products/:id (seller/admin)');
+    console.log('    DELETE /api/products/:id (admin)');
+  });
 });
