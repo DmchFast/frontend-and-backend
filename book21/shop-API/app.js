@@ -486,9 +486,12 @@ app.delete('/api/users/:id', authMiddleware, roleMiddleware(['admin']), async (r
 // Товары маршруты
 
 // GET получение списка товаров
-app.get("/api/products", authMiddleware, (req, res) => {
-  res.json(products);
-});
+app.get('/api/products', authMiddleware, cacheMiddleware(() => 'products:all', PRODUCTS_CACHE_TTL),
+  async (req, res) => {
+    await saveToCache(req.cacheKey, products, req.cacheTTL);
+    res.json({ source: 'server', data: products });
+  }
+);
 
 // получения товара проверка
 function findProductOr404(id, res) {
@@ -501,15 +504,17 @@ function findProductOr404(id, res) {
 }
 
 // GET получение товара по ID
-app.get("/api/products/:id", authMiddleware, (req, res) => {
-  const id = req.params.id;
-  const product = findProductOr404(id, res);
-  if (!product) return;
-  res.json(product);
-});
+app.get('/api/products/:id', authMiddleware, cacheMiddleware((req) => `products:${req.params.id}`, PRODUCTS_CACHE_TTL),
+  async (req, res) => {
+    const product = findProductOr404(req.params.id, res);
+    if (!product) return;
+    await saveToCache(req.cacheKey, product, req.cacheTTL);
+    res.json({ source: 'server', data: product });
+  }
+);
 
 // POST создание нового товара только seller и admin
-app.post("/api/products", authMiddleware, roleMiddleware(['seller', 'admin']), (req, res) => {
+app.post("/api/products", authMiddleware, roleMiddleware(['seller', 'admin']), async (req, res) => {
   const { name, category, description, price, stock, rating, image } = req.body;
   
   const newProduct = {
@@ -525,11 +530,14 @@ app.post("/api/products", authMiddleware, roleMiddleware(['seller', 'admin']), (
   };
   
   products.push(newProduct);
+
+  await invalidateProductsCache();
+
   res.status(201).json(newProduct);
 });
 
 // PATCH изменение товара seller и admin
-app.patch("/api/products/:id", authMiddleware, roleMiddleware(['seller', 'admin']), (req, res) => {
+app.patch("/api/products/:id", authMiddleware, roleMiddleware(['seller', 'admin']), async (req, res) => {
   const id = req.params.id;
   const product = findProductOr404(id, res);
   if (!product) return;
@@ -551,17 +559,22 @@ app.patch("/api/products/:id", authMiddleware, roleMiddleware(['seller', 'admin'
   if (stock !== undefined) product.stock = Number(stock);
   if (rating !== undefined) product.rating = Number(rating);
   if (image !== undefined) product.image = image.trim();
-  
+
+  await invalidateProductsCache(product.id);
+
   res.json(product);
 });
 
 // DELETE удаление товара  admin
-app.delete("/api/products/:id", authMiddleware, roleMiddleware(['admin']), (req, res) => {
+app.delete("/api/products/:id", authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   const id = req.params.id;
   const exists = products.some((p) => p.id === id);
   if (!exists) return res.status(404).json({ error: "Product not found" });
   
   products = products.filter((p) => p.id !== id);
+
+  await invalidateProductsCache(id);
+
   res.status(204).send();
 });
 
