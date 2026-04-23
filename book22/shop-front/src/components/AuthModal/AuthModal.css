@@ -1,0 +1,79 @@
+.auth-modal {
+  max-width: 400px !important;
+}
+.auth-modal .auth-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgb(252.1428571429, 240.8571428571, 240.8571428571);
+}
+.auth-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.auth-modal form input {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #f5f5f5;
+  color: #2d2d2d;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+.auth-modal form input:focus {
+  outline: 2px solid #107c10;
+  border-color: transparent;
+}
+.auth-modal form input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.auth-modal form .btn-submit {
+  background: #107c10;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+.auth-modal form .btn-submit:hover:not(:disabled) {
+  background: #4caf50;
+  transform: scale(1.02);
+}
+.auth-modal form .btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.auth-modal .auth-switch {
+  text-align: center;
+  padding: 1.2rem;
+  border-top: 1px solid #e0e0e0;
+  color: #2d2d2d;
+  font-size: 0.95rem;
+}
+.auth-modal .auth-switch button {
+  background: none;
+  border: none;
+  color: #107c10;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  font-size: 0.95rem;
+}
+.auth-modal .auth-switch button:hover:not(:disabled) {
+  color: #4caf50;
+  text-decoration: underline;
+}
+.auth-modal .auth-switch button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}/*# sourceMappingURL=AuthModal.css.map */
