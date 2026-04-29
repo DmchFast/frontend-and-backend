@@ -10,7 +10,7 @@ cd "/mnt/c/book23/shop-API/load-balancing"
 ### 1.2 Запуск контейнеров
 
 ```bash
-cd docker compose up --build
+docker compose up --build
 ```
 
 ### 1.3 Проверка балансировки (round‑robin)
@@ -35,7 +35,7 @@ curl http://localhost/
 
 > Все последующие ответы будут только от backend-2.
 
-####  Запустк сервера снова
+####  Запуск сервера снова
 
 ```bash
 docker compose start backend1
@@ -60,7 +60,7 @@ cd book23\shop-API\load-balancing
 ### 2.2 Запуск контейнеров
 
 ```bash
-cd docker compose up --build
+docker compose up --build
 ```
 
 ### 2.3 Проверка балансировки (round‑robin)
@@ -85,7 +85,7 @@ curl http://localhost/
 
 > Все последующие ответы будут только от backend-2.
 
-####  Запустк сервера снова
+####  Запуск сервера снова
 
 ```bash
 docker compose start backend1
