@@ -1,4 +1,4 @@
-# Практическое задание №18: Отчёт по всей работе
+# Практическое задание №24: Отчёт по всей работе
 
 [![Node.js](https://img.shields.io/badge/Node.js-18+-3C873A?style=for-the-badge&logo=nodedotjs&labelColor=303030)](https://nodejs.org)
 [![Express](https://img.shields.io/badge/Express-4.x-404d59?style=for-the-badge&logo=express&logoColor=58b7d3&labelColor=303030)](https://expressjs.com)
@@ -54,9 +54,6 @@ frontend-and-backend/
 
 **Результат:**  
 Полностью рабочее REST API, реализующее CRUD-операции с сохранением данных в PostgreSQL. Все маршруты протестированы – создание, чтение, обновление и удаление пользователей проходят корректно, связи между таблицами работают, транзакции обеспечивают целостность данных.
-
-### Запуск
-
 
 ### Запуск
 ```bash
