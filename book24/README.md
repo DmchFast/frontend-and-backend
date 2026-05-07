@@ -1,16 +1,14 @@
 # Практическое задание №24: Отчёт по всей работе
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-3C873A?style=for-the-badge&logo=nodedotjs&labelColor=303030)](https://nodejs.org)
-[![Express](https://img.shields.io/badge/Express-4.x-404d59?style=for-the-badge&logo=express&logoColor=58b7d3&labelColor=303030)](https://expressjs.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-316192?style=for-the-badge&logo=postgresql&labelColor=303030&logoColor=white)](https://www.postgresql.org)
-[![MongoDB](https://img.shields.io/badge/MongoDB-7-47A248?style=for-the-badge&logo=mongodb&labelColor=303030&logoColor=white)](https://www.mongodb.com)
-[![Redis](https://img.shields.io/badge/Redis-7-D82C20?style=for-the-badge&logo=redis&labelColor=303030&logoColor=white)](https://redis.io)
-[![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&labelColor=303030&logoColor=white)](https://nginx.org)
-[![Docker](https://img.shields.io/badge/Docker-27.0-2496ED?style=for-the-badge&logo=docker&labelColor=303030&logoColor=white)](https://www.docker.com)
-[![HAProxy](https://img.shields.io/badge/HAProxy-2.8-1c6e99?style=for-the-badge&logo=haproxy&labelColor=303030&logoColor=white)](https://www.haproxy.org)
 [![Nodejs](https://img.shields.io/badge/24.13.1-3C873A?style=for-the-badge&logo=node.js&label=Node.js&labelColor=303030&logoColor=3C873A)]()
 [![Express](https://img.shields.io/badge/5.2.1-404d59?style=for-the-badge&logo=express&logoColor=58b7d3&label=Express.js&labelColor=303030)]()
 [![JavaScript](https://img.shields.io/badge/ES6+-F7DF1E?style=for-the-badge&logo=javascript&label=JavaScript&labelColor=303030)]()
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-316192?style=for-the-badge&logo=postgresql&labelColor=303030&logoColor=white)](https://www.postgresql.org)
+[![MongoDB](https://img.shields.io/badge/MongoDB-7-47A248?style=for-the-badge&logo=mongodb&labelColor=303030&logoColor=white)](https://www.mongodb.com)
+[![Docker](https://img.shields.io/badge/Docker-27.0-2496ED?style=for-the-badge&logo=docker&labelColor=303030&logoColor=white)](https://www.docker.com)
+[![Redis](https://img.shields.io/badge/Redis-7-D82C20?style=for-the-badge&logo=redis&labelColor=303030&logoColor=white)](https://redis.io)
+[![Nginx](https://img.shields.io/badge/Nginx-1.26-009639?style=for-the-badge&logo=nginx&labelColor=303030&logoColor=white)](https://nginx.org)
+[![HAProxy](https://img.shields.io/badge/HAProxy-2.8-1c6e99?style=for-the-badge&logo=haproxy&labelColor=303030&logoColor=white)](https://www.haproxy.org)
 
 ## Структура проекта
 
